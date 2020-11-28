@@ -16,7 +16,8 @@ import {
   StatusBar,
   TextInput,
     TouchableOpacity,
-    Alert
+    Alert,
+    Modal
 } from 'react-native';
 
 
@@ -30,7 +31,7 @@ class App extends React.Component {
             discount:'',
             savedtext:'',
             history:[],
-            current:{}
+            modalVisible: false
 
 
         }
@@ -60,10 +61,57 @@ class App extends React.Component {
 
     }
 
+
+    saved= ()=>{
+        let history=this.state.history
+        let discount=this.state.discount;
+        let finalprice=this.state.finalprice;
+        let originalprice=this.state.originalprice;
+         let object={
+             discount: discount,
+         finall:finalprice,
+         original:originalprice}
+         history.push(object)
+        this.setState({history: history,
+        savedtext: "",
+        finalprice: ''})
+    }
+
+    displayModal=()=>{
+        this.setState({modalVisible: true})
+    }
+
   render(): React$Node {
     return(
 
+
         <View style={styles.container}>
+
+            <Modal visible={this.state.modalVisible}>
+                <View style={styles.modal}>
+                <View style={styles.Table}>
+                    <View style={styles.headview} >
+                        <Text style={styles.tablehead}>ORIGINAL</Text>
+                        <Text style={styles.tablehead}>DISCOUNT</Text>
+                        <Text style={styles.tablehead}>FINAL</Text>
+
+                    </View>
+                    {
+                        this.state.history.map(item=> {
+
+                            return(
+                            <View style={styles.contentview}>
+                                <Text style={styles.tablecontent}> {item.original}</Text>
+                                <Text style={styles.tablecontent}>{item.discount}</Text>
+                                <Text style={styles.tablecontent}>{item.finall}</Text>
+                            </View>
+                            )
+                        })
+                    }
+                </View>
+                </View>
+            </Modal>
+
             <Text style={styles.savedtext}>{this.state.savedtext}</Text>
           <Text style={styles.title}>DiscountAPP</Text>
 
@@ -87,8 +135,9 @@ class App extends React.Component {
                 value={this.state.finalprice}
             />
 
-          <TouchableOpacity style={styles.button}><Text style={styles.buttontext}>SAVE</Text></TouchableOpacity>
+          <TouchableOpacity onPress={()=>{this.saved()}} style={styles.button}><Text style={styles.buttontext}>SAVE</Text></TouchableOpacity>
           <TouchableOpacity onPress={()=>{this.calculateDiscount()}} style={styles.button2}><Text style={styles.buttontext}>CALCULATE</Text></TouchableOpacity>
+            <TouchableOpacity onPress={()=>{this.displayModal()}} style={styles.button3}><Text style={styles.buttontext}>HISTORY</Text></TouchableOpacity>
 
         </View>
         )
@@ -157,7 +206,7 @@ const styles = StyleSheet.create({
         height: '7%',
         borderWidth:1,
         borderRadius:50,
-        borderColor:'#f05a5a',
+        borderColor:'transparent',
         backgroundColor: 'transparent',
         display:'flex',
         alignItems: 'center',
@@ -165,12 +214,80 @@ const styles = StyleSheet.create({
         marginTop:10,
       },
 
+    button3:
+        {
+            width:'85%',
+            height: '7%',
+            borderWidth:1,
+            borderRadius:50,
+            borderColor:'black',
+            backgroundColor: 'black',
+            display:'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop:10,
+        },
+
     savedtext:
         {
             color:'white',
             textAlign:'center',
             fontSize:20,
+        },
+
+        Table:
+            {
+                display:'flex',
+                alignSelf: 'stretch',
+                flexDirection: 'column',
+                width:'85%',
+                marginLeft:'7%',
+                marginTop:'7%',
+            },
+    tablehead:
+        {
+            fontSize:20,
+            fontWeight: "bold",
+
+            color:'white'
+
+
+        },
+
+
+    tablecontent:
+        {
+            fontSize:18,
+            color:'white',
+        },
+
+    contentview:{
+        display: 'flex', justifyContent: 'space-between', flexDirection: 'row', borderBottomWidth:2, borderBottomColor:'#f05a5a',
+        borderRightWidth:2, borderRightColor:'#f05a5a',
+        borderLeftWidth:2, borderLeftColor:'#f05a5a',
+        padding:4,
+        height:'15%',
+        alignItems:'center'
+    },
+
+    headview:
+        {
+            display:'flex', justifyContent:'space-between', flexDirection:'row',
+            borderWidth:2,
+            borderColor:'#f05a5a',
+            padding:4,
+            height:'20%',
+            alignItems:'center'
+
+        },
+    modal:
+        {
+            backgroundColor:'#465881',
+            width:'100%',
+            height:'100%'
         }
+
+
 
 });
 
